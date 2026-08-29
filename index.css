@@ -1,0 +1,308 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    perspective: 1400px;
+    background:
+        radial-gradient(circle at top, rgba(86, 247, 255, 0.12), transparent 24%),
+        radial-gradient(circle at center bottom, rgba(67, 219, 255, 0.08), transparent 22%),
+        linear-gradient(180deg, #04070c 0%, #091420 46%, #10263a 100%);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.stage{
+    position: relative;
+    width: min(100vw, 900px);
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    perspective: 1600px;
+}
+
+.hologram-rig{
+    position: relative;
+    width: 420px;
+    height: 520px;
+    display: grid;
+    place-items: center;
+    transform-style: preserve-3d;
+}
+
+.hologram-backdrop{
+    position: absolute;
+    inset: 46px 38px 84px;
+    background:
+        linear-gradient(180deg, rgba(87, 209, 255, 0.04), rgba(87, 209, 255, 0.02)),
+        repeating-linear-gradient(180deg, rgba(145, 228, 255, 0.08) 0 2px, transparent 2px 7px);
+    opacity: 0.42;
+    filter: blur(0.4px);
+    mask-image: radial-gradient(circle at center, black 52%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at center, black 52%, transparent 100%);
+}
+
+.light-column{
+    position: absolute;
+    bottom: 108px;
+    left: 50%;
+    width: 312px;
+    height: 348px;
+    transform: translateX(-50%);
+    background:
+        radial-gradient(ellipse at 50% 100%, rgba(143, 244, 255, 0.28), rgba(143, 244, 255, 0.12) 18%, rgba(143, 244, 255, 0.04) 34%, transparent 62%),
+        radial-gradient(ellipse at 50% 56%, rgba(143, 244, 255, 0.1), rgba(143, 244, 255, 0.04) 34%, transparent 72%),
+        linear-gradient(180deg, rgba(124, 232, 255, 0) 0%, rgba(124, 232, 255, 0.05) 30%, rgba(124, 232, 255, 0.08) 58%, rgba(124, 232, 255, 0.03) 78%, transparent 100%);
+    filter: blur(34px);
+    opacity: 0.72;
+    mix-blend-mode: screen;
+    animation: beam-pulse 6.8s ease-in-out infinite;
+}
+
+.light-column::before,
+.light-column::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
+.light-column::before{
+    background:
+        radial-gradient(ellipse at 50% 18%, rgba(216, 255, 255, 0.12), transparent 44%),
+        radial-gradient(ellipse at 50% 72%, rgba(132, 239, 255, 0.12), transparent 48%),
+        linear-gradient(180deg, rgba(132, 239, 255, 0) 0%, rgba(132, 239, 255, 0.08) 42%, rgba(132, 239, 255, 0.02) 100%);
+    filter: blur(44px);
+    opacity: 0.74;
+    animation: beam-flow 8s ease-in-out infinite;
+}
+
+.light-column::after{
+    background:
+        radial-gradient(ellipse at 50% 100%, rgba(111, 245, 255, 0.28), rgba(111, 245, 255, 0.08) 26%, transparent 58%),
+        radial-gradient(ellipse at 50% 34%, rgba(111, 245, 255, 0.08), transparent 52%);
+    filter: blur(56px);
+    opacity: 0.46;
+    animation: beam-breathe 7.2s ease-in-out infinite;
+}
+
+.image-stack{
+    position: relative;
+    width: 300px;
+    height: 340px;
+    overflow: visible;
+    transform-style: preserve-3d;
+    animation: drift-3d 8s ease-in-out infinite;
+    z-index: 2;
+}
+
+.image-stack::before{
+    content: "";
+    position: absolute;
+    inset: -28px -18px -24px;
+    background:
+        linear-gradient(180deg, rgba(184, 245, 255, 0.06), rgba(184, 245, 255, 0.01)),
+        repeating-linear-gradient(180deg, rgba(177, 251, 255, 0.08) 0 2px, rgba(177, 251, 255, 0.01) 2px 7px);
+    filter: blur(0.4px);
+    opacity: 0.36;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    z-index: 3;
+}
+
+.stack-card{
+    position: absolute;
+    border-radius: 18px;
+    object-fit: cover;
+    box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.24),
+        0 0 12px rgba(93, 245, 255, 0.08),
+        0 0 32px rgba(93, 245, 255, 0.14);
+    user-select: none;
+    transition:
+        top 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+        left 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+        width 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+        height 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 1.35s cubic-bezier(0.22, 1, 0.36, 1);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform, top, left, opacity;
+    mix-blend-mode: normal;
+    outline: 1px solid rgba(168, 246, 255, 0.18);
+}
+
+.is-back{
+    top: -34px;
+    left: 82px;
+    width: 168px;
+    height: 138px;
+    opacity: 0.78;
+    filter: saturate(0.98) blur(0.12px) brightness(1.03);
+    z-index: 0;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.16),
+        0 0 34px rgba(107, 246, 255, 0.26);
+    transform: translate3d(0, 0, -58px) rotateX(8deg) rotateY(-12deg) rotateZ(-7deg) scale(0.98);
+}
+
+.is-main{
+    top: 54px;
+    left: 28px;
+    width: 205px;
+    height: 168px;
+    opacity: 0.94;
+    filter: saturate(1) brightness(1.02) contrast(1);
+    z-index: 2;
+    box-shadow:
+        0 30px 64px rgba(0, 0, 0, 0.22),
+        0 0 46px rgba(104, 239, 255, 0.34);
+    transform: translate3d(0, 0, 110px) rotateX(-2deg) rotateY(6deg) rotateZ(0deg) scale(1.04);
+}
+
+.is-front{
+    top: 166px;
+    left: 86px;
+    width: 148px;
+    height: 96px;
+    opacity: 0.72;
+    z-index: 1;
+    filter: saturate(0.96) brightness(1.02);
+    box-shadow:
+        0 14px 26px rgba(0, 0, 0, 0.14),
+        0 0 28px rgba(93, 237, 255, 0.2);
+    transform: translate3d(0, 0, -118px) rotateX(-6deg) rotateY(18deg) rotateZ(6deg) scale(0.9);
+}
+
+.projector-base{
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    width: 300px;
+    height: 124px;
+    transform: translateX(-50%) rotateX(72deg);
+    transform-style: preserve-3d;
+    z-index: 1;
+}
+
+.base-glow,
+.base-orbit,
+.base-axis{
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+}
+
+.base-glow{
+    background:
+        radial-gradient(circle, rgba(132, 244, 255, 0.24) 0%, rgba(132, 244, 255, 0.08) 42%, transparent 68%);
+    filter: blur(10px);
+    transform: scale(0.94);
+}
+
+.base-orbit{
+    border: 2px solid rgba(111, 247, 255, 0.5);
+    box-shadow: 0 0 16px rgba(111, 247, 255, 0.2);
+}
+
+.orbit-a{
+    inset: 18px 18px 26px;
+    transform: rotate(-18deg) scaleX(1.02);
+    animation: orbit-drift-a 6.2s ease-in-out infinite;
+}
+
+.orbit-b{
+    inset: 28px 8px 36px;
+    border-width: 1px;
+    opacity: 0.68;
+    transform: rotate(16deg) scaleX(0.92);
+    animation: orbit-drift-b 7s ease-in-out infinite;
+}
+
+.base-axis{
+    inset: 56px 2px auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(171, 250, 255, 0.9), transparent);
+    border-radius: 999px;
+    box-shadow: 0 0 18px rgba(171, 250, 255, 0.32);
+    opacity: 0.82;
+}
+
+@keyframes drift-3d{
+    0%, 100%{
+        transform: rotateX(10deg) rotateY(-10deg) translate3d(0, 0, 0);
+    }
+    50%{
+        transform: rotateX(4deg) rotateY(10deg) translate3d(12px, -14px, 0);
+    }
+}
+
+@keyframes beam-pulse{
+    0%, 100%{
+        opacity: 0.54;
+        transform: translateX(-50%) scaleX(0.97) scaleY(0.98);
+    }
+    50%{
+        opacity: 0.74;
+        transform: translateX(-50%) scaleX(1.02) scaleY(1.04);
+    }
+}
+
+@keyframes beam-flow{
+    0%, 100%{
+        opacity: 0.62;
+        transform: translateY(0) scaleX(0.97);
+    }
+    50%{
+        opacity: 0.86;
+        transform: translateY(-8px) scaleX(1.03);
+    }
+}
+
+@keyframes beam-breathe{
+    0%, 100%{
+        opacity: 0.42;
+        transform: scaleX(0.94) scaleY(0.98);
+    }
+    50%{
+        opacity: 0.62;
+        transform: scaleX(1.04) scaleY(1.05);
+    }
+}
+
+@keyframes core-pulse{
+    0%, 100%{
+        opacity: 0.82;
+        transform: scale(0.96);
+    }
+    50%{
+        opacity: 1;
+        transform: scale(1.08);
+    }
+}
+
+@keyframes orbit-drift-a{
+    0%, 100%{
+        transform: rotate(-18deg) scaleX(1.02);
+    }
+    50%{
+        transform: rotate(-10deg) scaleX(1.05);
+    }
+}
+
+@keyframes orbit-drift-b{
+    0%, 100%{
+        transform: rotate(16deg) scaleX(0.92);
+    }
+    50%{
+        transform: rotate(8deg) scaleX(0.98);
+    }
+}
